@@ -84,6 +84,6 @@ ScaffoldMessenger.of(context) nantinya flutter akan mencari widget Scaffold terd
 
 6. Jelaskan konsep "hot reload" di Flutter dan bagaimana bedanya dengan "hot restart".
 
-Hot reload konsepnya adalah menyuntikkan perubahan kode ke aplikasi tanpa harus kehilangan state (misal data di layar tidak di reset), Hot restart konsepnya adalah merestart aplikasi dari awal dan membangun ulang widget tree. Selain itu, semua state akan hilang . 
+Hot reload konsepnya adalah menyuntikkan perubahan kode ke aplikasi tanpa harus kehilangan state (misal data di layar tidak di reset), Hot restart konsepnya adalah merestart aplikasi dari awal dan membangun ulang widget tree. Selain itu, semua statenya akan hilang . 
 
 Efek dari hot reload akan sangat cepat dan cocok untuk ubah UI atau logika kecil, sedangkan untuk hot restart akan lebih lambar tapi bersih karena cocok untuk ubah kode besar seperti main atau insialisasi global.
