@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:patshop/productlist_form.dart';
+import 'package:patshop/widgets/left_drawer.dart';
 
 class MyHomePage extends StatelessWidget {
   
-  MyHomePage({super.key});
+  const MyHomePage({super.key});
   
   // tiga tombol dengan nama dan ikon
-  final List<ItemHomepage> items = [
+  final List<ItemHomepage> items = const [
     ItemHomepage("All Products", Icons.list, Colors.blue),
     ItemHomepage("My Products", Icons.shopping_bag, Colors.green),
     ItemHomepage("Create Product", Icons.add, Colors.red),
@@ -24,6 +26,7 @@ class MyHomePage extends StatelessWidget {
         ),
         backgroundColor: Colors.blueAccent,
       ),
+      drawer: const LeftDrawer(),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Center(
@@ -60,6 +63,14 @@ class ItemCard extends StatelessWidget {
               ),
             ),
           );
+        if (item.name == "Create Product") {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const ProductFormPage(),
+            ),
+          );
+        }
       },
       icon: Icon(item.icon, color: Colors.white),
       label: Text(item.name, style: const TextStyle(color: Colors.white)),
@@ -77,5 +88,5 @@ class ItemHomepage {
   final IconData icon;
   final Color color;
 
-  ItemHomepage(this.name, this.icon, this.color);
+  const ItemHomepage(this.name, this.icon, this.color);
 }
