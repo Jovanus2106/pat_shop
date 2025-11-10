@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.blue)
             .copyWith(secondary: Colors.blueAccent[400]),
       ),
-      home: MyHomePage(), 
+      home: const MyHomePage(),
       debugShowCheckedModeBanner: false,
     );
   }
