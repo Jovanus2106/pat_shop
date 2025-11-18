@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:patshop/menu.dart';
 import 'package:patshop/productlist_form.dart';
+import 'package:patshop/screens/product_entry_list.dart';
+import 'package:patshop/screens/menu.dart';   // <-- DITAMBAHKAN
 
 class LeftDrawer extends StatelessWidget {
   const LeftDrawer({super.key});
@@ -39,8 +40,10 @@ class LeftDrawer extends StatelessWidget {
               ],
             ),
           ),
+
+          // === HOME (DITAMBAHKAN) ===
           ListTile(
-            leading: const Icon(Icons.home_outlined),
+            leading: const Icon(Icons.home),
             title: const Text('Home'),
             onTap: () {
               Navigator.pushReplacement(
@@ -51,6 +54,22 @@ class LeftDrawer extends StatelessWidget {
               );
             },
           ),
+
+          // === PRODUCT LIST ===
+          ListTile(
+            leading: const Icon(Icons.add_reaction_rounded),
+            title: const Text('Product List'),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ProductEntryListPage(),
+                ),
+              );
+            },
+          ),
+
+          // === ADD PRODUCT ===
           ListTile(
             leading: const Icon(Icons.post_add),
             title: const Text('Add Product'),
@@ -68,4 +87,3 @@ class LeftDrawer extends StatelessWidget {
     );
   }
 }
-

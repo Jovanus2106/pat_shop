@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:patshop/widgets/left_drawer.dart';
+import 'dart:convert';
+import 'package:provider/provider.dart';
+import 'package:pbp_django_auth/pbp_django_auth.dart';
+import 'package:patshop/screens/menu.dart';
 
 class ProductFormPage extends StatefulWidget {
   const ProductFormPage({super.key});
@@ -15,6 +19,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
   String _category = "Elektronik";
   String _thumbnail = "";
   String _price = "";
+  String _stock = "";
   bool _isFeatured = false;
 
   static const List<String> _categories = [
@@ -27,6 +32,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
 
   @override
   Widget build(BuildContext context) {
+    final request = context.watch<CookieRequest>();
     return Scaffold(
       appBar: AppBar(
         title: const Center(
@@ -198,15 +204,6 @@ class _ProductFormPageState extends State<ProductFormPage> {
                     if (uri == null || !uri.hasScheme || !uri.hasAuthority) {
                       return "URL tidak valid! Harus diawali dengan http/https dan memiliki format yang benar.";
                     }
-
-                    // Cek apakah URL punya ekstensi gambar
-                    if (!(value.toLowerCase().endsWith(".jpg") ||
-                        value.toLowerCase().endsWith(".png") ||
-                        value.toLowerCase().endsWith(".jpeg") ||
-                        value.toLowerCase().endsWith(".gif"))) {
-                      return "URL harus mengarah ke gambar (.jpg, .png, .jpeg, .gif)!";
-                    }
-
                     return null;
                   },
                 ),
@@ -225,59 +222,94 @@ class _ProductFormPageState extends State<ProductFormPage> {
                   },
                 ),
               ),
-
-              // === Tombol Simpan ===
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Center(
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.indigo,
-                    ),
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        showDialog(
-                          context: context,
-                          builder: (context) {
-                            return AlertDialog(
-                              title:
-                                  const Text('Produk berhasil tersimpan'),
-                              content: SingleChildScrollView(
-                                child: Column(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.start,
-                                  children: [
-                                    Text('Judul: $_title'),
-                                    Text('Kategori: $_category'),
-                                    Text('Deskripsi Produk: $_content'),
-                                    Text('Harga: Rp $_price'),
-                                    Text('URL Thumbnail: $_thumbnail'),
-                                    Text(
-                                        'Unggulan: ${_isFeatured ? "Ya" : "Tidak"}'),
-                                  ],
-                                ),
-                              ),
-                              actions: [
-                                TextButton(
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                    _formKey.currentState!.reset();
-                                  },
-                                  child: const Text('OK'),
-                                ),
-                              ],
-                            );
-                          },
-                        );
-                      }
-                    },
-                    child: const Text(
-                      "Simpan",
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
+              // === Stock ===
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextFormField(
+              decoration: InputDecoration(
+                hintText: "Stok Produk",
+                labelText: "Stok Produk",
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(5.0),
                 ),
               ),
+              keyboardType: TextInputType.number,
+              onChanged: (String? value) {
+                setState(() {
+                  _stock = value!;
+                });
+              },
+              validator: (String? value) {
+                if (value == null || value.isEmpty) {
+                  return "Stok wajib diisi!";
+                }
+                final num? stock = num.tryParse(value);
+                if (stock == null) {
+                  return "Stok harus berupa angka!";
+                }
+                if (stock < 0) {
+                  return "Stok tidak boleh negatif!";
+                }
+                return null;
+              },
+            ),
+          ),
+             
+              // === Tombol Simpan ===
+              // === Tombol Simpan ===
+Padding(
+  padding: const EdgeInsets.all(8.0),
+  child: Center(
+    child: ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.indigo,
+      ),
+      onPressed: () async {
+        if (_formKey.currentState!.validate()) {
+          
+          // === KIRIM KE DJANGO ===
+          final response = await request.postJson(
+            "http://127.0.0.1:8000/create-flutter/",
+            jsonEncode({
+              "name": _title,
+              "description": _content,
+              "price": int.parse(_price),
+              "thumbnail": _thumbnail,
+              "category": _category,
+              "stock": int.parse(_stock),
+              "is_featured": _isFeatured,
+            }),
+          );
+
+          if (context.mounted) {
+            if (response['status'] == 'success') {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text("Product successfully saved!"),
+                ),
+              );
+
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const MyHomePage()),
+              );
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text("Something went wrong, please try again."),
+                ),
+              );
+            }
+          }
+        }
+      },
+      child: const Text(
+        "Simpan",
+        style: TextStyle(color: Colors.white),
+      ),
+    ),
+  ),
+),
             ],
           ),
         ),
@@ -285,4 +317,3 @@ class _ProductFormPageState extends State<ProductFormPage> {
     );
   }
 }
-
