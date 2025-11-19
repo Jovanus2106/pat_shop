@@ -3,8 +3,7 @@ import 'package:patshop/models/ProductEntry.dart';
 import 'package:patshop/widgets/product_entry_card.dart';
 import 'package:provider/provider.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
-import 'package:patshop/screens/product_detail.dart';  // <-- DITAMBAHKAN
-
+import 'package:patshop/screens/product_detail.dart';  
 class MyProductEntryListPage extends StatefulWidget {
   const MyProductEntryListPage({super.key});
 
@@ -61,7 +60,6 @@ class _MyProductEntryListPageState extends State<MyProductEntryListPage> {
               return ProductEntryCard(
                 product: data[index],
 
-                // ✔ Sekarang kalau diklik → masuk ke ProductDetailPage
                 onTap: () {
                   Navigator.push(
                     context,

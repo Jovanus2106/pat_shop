@@ -66,7 +66,6 @@ class ProductEntryCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 6),
 
-                // 🟦 Tambahan baru → STOCK
                 Text(
                   'Stok: ${product.stock}',
                   style: const TextStyle(color: Colors.black87),
